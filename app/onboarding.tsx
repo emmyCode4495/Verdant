@@ -27,7 +27,7 @@ function Page({ i, scrollX, W, H }: { i: number; scrollX: SharedValue<number>; W
   }));
   const p = PAGES[i];
   return (
-    <View style={{ width: W, height: H }}>
+    <View style={{ width: W, height: H, overflow: 'hidden' }}>
       <Animated.View style={[{ position: 'absolute', left: -W * 0.2, width: W * 1.4, height: H }, img]}>
         <Img uri={p.img} style={StyleSheet.absoluteFill} />
       </Animated.View>

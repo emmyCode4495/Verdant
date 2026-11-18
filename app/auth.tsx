@@ -11,6 +11,7 @@ import * as Haptics from 'expo-haptics';
 import { router } from 'expo-router';
 import { FocusStatusBar, IconName, Img, PressableScale, Reveal } from '../src/ui';
 import { IMG } from '../src/data';
+import { LoadingOverlay } from '../src/Loader';
 import { useStore } from '../src/store';
 import { colors, fonts, motion } from '../src/theme';
 
@@ -52,15 +53,11 @@ export default function Auth() {
   const seg = useSharedValue(0);
   const shake = useSharedValue(0);
   const grow = useSharedValue(0);
-  const dots = useSharedValue(0);
 
   const segW = (W - 48 - 8) / 2;
   const indicator = useAnimatedStyle(() => ({ transform: [{ translateX: seg.value * segW }] }));
   const shakeStyle = useAnimatedStyle(() => ({ transform: [{ translateX: shake.value }] }));
   const overlay = useAnimatedStyle(() => ({ transform: [{ scale: grow.value * 40 }], opacity: grow.value > 0 ? 1 : 0 }));
-  const dotStyle = (k: number) =>
-    useAnimatedStyle(() => ({ opacity: 0.3 + 0.7 * Math.max(0, 1 - Math.abs(dots.value * 3 - k)) }));
-  const d0 = dotStyle(0), d1 = dotStyle(1), d2 = dotStyle(2);
 
   const switchMode = (m: 'in' | 'up') => {
     setMode(m);
@@ -84,7 +81,6 @@ export default function Auth() {
     }
     setErr('');
     setBusy(true);
-    dots.value = withRepeat(withTiming(1, { duration: 900, easing: Easing.linear }), -1);
     grow.value = withDelay(1300, withTiming(1, { duration: 650, easing: motion.easeOut }, (done) => {
       if (done) runOnJS(finish)();
     }));
@@ -131,9 +127,7 @@ export default function Auth() {
             {err ? <Animated.Text entering={FadeInDown.duration(200)} style={styles.err}>{err}</Animated.Text> : <View style={{ height: 22 }} />}
             <PressableScale onPress={submit} haptic style={styles.cta}>
               {busy ? (
-                <View style={{ flexDirection: 'row', gap: 6 }}>
-                  {[d0, d1, d2].map((s, i) => <Animated.View key={i} style={[styles.dot, s]} />)}
-                </View>
+                <Text style={styles.ctaText}>Signing you in…</Text>
               ) : (
                 <>
                   <Text style={styles.ctaText}>{mode === 'in' ? 'Enter the farm' : 'Create my account'}</Text>
@@ -145,6 +139,8 @@ export default function Auth() {
           </Animated.View>
         </View>
       </ScrollView>
+
+      {busy && <LoadingOverlay />}
 
       {/* success: the button's green blooms into the app */}
       <Animated.View pointerEvents="none" style={[styles.bloom, { left: W / 2 - 40, top: H - insets.bottom - 150 }, overlay]} />
@@ -165,7 +161,6 @@ const styles = StyleSheet.create({
   err: { height: 22, marginTop: 0, fontFamily: fonts.bodyMed, fontSize: 13, color: colors.danger },
   cta: { height: 60, borderRadius: 30, backgroundColor: colors.forest, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10, shadowColor: colors.forest, shadowOpacity: 0.35, shadowRadius: 16, shadowOffset: { width: 0, height: 8 }, elevation: 8 },
   ctaText: { fontFamily: fonts.bodyBold, fontSize: 16, color: '#fff' },
-  dot: { width: 9, height: 9, borderRadius: 5, backgroundColor: '#fff' },
   hint: { marginTop: 14, textAlign: 'center', fontFamily: fonts.body, fontSize: 12, color: colors.muted },
   bloom: { position: 'absolute', width: 80, height: 80, borderRadius: 40, backgroundColor: colors.forest },
 });

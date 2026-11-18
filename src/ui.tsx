@@ -8,7 +8,7 @@ import Svg, { Circle } from 'react-native-svg';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
-import { useIsFocused } from '@react-navigation/native';
+import { useNavigation } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { colors, fonts, motion } from './theme';
@@ -17,7 +17,15 @@ export type IconName = React.ComponentProps<typeof Ionicons>['name'];
 
 /* ---------- Status bar that only speaks when its screen is focused ---------- */
 export function FocusStatusBar({ style }: { style: 'light' | 'dark' }) {
-  const focused = useIsFocused();
+  const navigation = useNavigation();
+  const [focused, setFocused] = React.useState(() => navigation.isFocused());
+
+  useEffect(() => {
+    const onFocus = navigation.addListener('focus', () => setFocused(true));
+    const onBlur = navigation.addListener('blur', () => setFocused(false));
+    return () => { onFocus(); onBlur(); };
+  }, [navigation]);
+
   return focused ? <StatusBar style={style} /> : null;
 }
 
@@ -132,13 +140,17 @@ export function DotProgress({ value, total = 12, size = 7, gap = 4, color = colo
 }
 
 /* ---------- Image with a designed fallback behind it ---------- */
-export function Img({ uri, style, children }: { uri: string; style?: StyleProp<ViewStyle>; children?: ReactNode }) {
+export function Img({ uri, style, children, sharedTag }: { uri: string; style?: StyleProp<ViewStyle>; children?: ReactNode; sharedTag?: string }) {
+  const Wrap: any = sharedTag ? Animated.View : View;
   return (
-    <View style={[{ overflow: 'hidden', backgroundColor: colors.bgDeep }, style]}>
+    <Wrap
+      {...(sharedTag ? { sharedTransitionTag: sharedTag } : null)}
+      style={[{ overflow: 'hidden', backgroundColor: colors.bgDeep }, style]}
+    >
       <LinearGradient colors={['#8FBF9F', '#CBE8A0']} style={StyleSheet.absoluteFill} />
       <Image source={{ uri }} style={StyleSheet.absoluteFill} contentFit="cover" transition={500} />
       {children}
-    </View>
+    </Wrap>
   );
 }
 
