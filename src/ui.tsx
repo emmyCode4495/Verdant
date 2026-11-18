@@ -140,7 +140,7 @@ export function DotProgress({ value, total = 12, size = 7, gap = 4, color = colo
 }
 
 /* ---------- Image with a designed fallback behind it ---------- */
-export function Img({ uri, style, children, sharedTag }: { uri: string; style?: StyleProp<ViewStyle>; children?: ReactNode; sharedTag?: string }) {
+export function Img({ uri, style, children, sharedTag, transition = 500 }: { uri: string; style?: StyleProp<ViewStyle>; children?: ReactNode; sharedTag?: string; transition?: number }) {
   const Wrap: any = sharedTag ? Animated.View : View;
   return (
     <Wrap
@@ -148,7 +148,7 @@ export function Img({ uri, style, children, sharedTag }: { uri: string; style?: 
       style={[{ overflow: 'hidden', backgroundColor: colors.bgDeep }, style]}
     >
       <LinearGradient colors={['#8FBF9F', '#CBE8A0']} style={StyleSheet.absoluteFill} />
-      <Image source={{ uri }} style={StyleSheet.absoluteFill} contentFit="cover" transition={500} />
+      <Image source={{ uri }} style={StyleSheet.absoluteFill} contentFit="cover" transition={transition} />
       {children}
     </Wrap>
   );

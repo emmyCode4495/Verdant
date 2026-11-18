@@ -36,7 +36,7 @@ export default function Root() {
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: colors.bg }}>
       <Stack screenOptions={{ headerShown: false, animation: 'fade', contentStyle: { backgroundColor: colors.bg } }}>
         <Stack.Screen name="index" />
-        <Stack.Screen name="onboarding" />
+        <Stack.Screen name="onboarding" options={{ animation: 'none' }} />
         <Stack.Screen name="auth" />
         <Stack.Screen name="(tabs)" options={{ gestureEnabled: false }} />
         <Stack.Screen name="farm/[id]" options={{ animation: 'fade_from_bottom' }} />

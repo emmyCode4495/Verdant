@@ -7,9 +7,21 @@
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
-    "splash": { "backgroundColor": "#16342A" },
-    "plugins": ["expo-router", "expo-font"],
-    "ios": { "supportsTablet": false, "bundleIdentifier": "com.verdant.app" },
-    "android": { "package": "com.verdant.app", "backgroundColor": "#16342A" }
+    "splash": {
+      "backgroundColor": "#16342A"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      "expo-video"
+    ],
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.verdant.app"
+    },
+    "android": {
+      "package": "com.verdant.app",
+      "backgroundColor": "#16342A"
+    }
   }
 }
